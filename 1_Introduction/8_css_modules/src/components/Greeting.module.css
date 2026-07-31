@@ -1,0 +1,9 @@
+.container{
+    font-family: Arial, Helvetica, sans-serif;
+border: 5px solid rgb(33, 10, 245);
+}
+
+.bg-dark{
+    background-color: #000;
+    color: #fff;
+}

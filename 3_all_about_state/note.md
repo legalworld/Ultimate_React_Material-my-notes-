@@ -1662,4 +1662,286 @@ That's why you could build projects perfectly fine with `useState + useReducer +
 
 ---
 
-# (Q-5)
+# (Q-5) tell me about prop drilling.
+
+==>
+
+In React, **prop drilling** means passing data from a component at the top of the component tree down through several intermediate components **just so a deeply nested component can use that data**.
+
+### Simple example
+
+Suppose your component structure is:
+
+```text
+App
+ ↓
+Parent
+ ↓
+Child
+ ↓
+GrandChild
+```
+
+And `GrandChild` needs a `user` object that `App` owns.
+
+You might have to do this:
+
+```jsx
+function App() {
+  const user = {
+    name: "Gourab",
+    age: 22,
+  };
+
+  return <Parent user={user} />;
+}
+
+function Parent({ user }) {
+  return <Child user={user} />;
+}
+
+function Child({ user }) {
+  return <GrandChild user={user} />;
+}
+
+function GrandChild({ user }) {
+  return <h1>Hello {user.name}</h1>;
+}
+```
+
+Notice something annoying:
+
+```text
+App
+ │
+ │ user
+ ↓
+Parent
+ │
+ │ user
+ ↓
+Child
+ │
+ │ user
+ ↓
+GrandChild
+```
+
+`Parent` and `Child` **don't actually need `user`**.
+
+They are only receiving it so they can pass it further down.
+
+That's **prop drilling**.
+
+---
+
+## Why is prop drilling considered a problem?
+
+Prop drilling itself isn't wrong. In fact, **passing props is the normal React mechanism for sharing data between components**.
+
+It becomes problematic when the component tree gets deep.
+
+Imagine:
+
+```text
+App
+ ↓
+Layout
+ ↓
+Dashboard
+ ↓
+Sidebar
+ ↓
+Profile
+ ↓
+UserInfo
+ ↓
+Avatar
+```
+
+And `Avatar` needs:
+
+```js
+user;
+```
+
+You could end up doing:
+
+```jsx
+<App>
+  <Layout user={user}>
+    <Dashboard user={user}>
+      <Sidebar user={user}>
+        <Profile user={user}>
+          <UserInfo user={user}>
+            <Avatar user={user} />
+```
+
+Now you have:
+
+- unnecessary props
+- components coupled to data they don't use
+- more code to maintain
+- changes becoming annoying
+
+---
+
+# How do we solve prop drilling?
+
+The most common solution in React is **Context API**.
+
+Instead of manually passing:
+
+```text
+App → Parent → Child → GrandChild
+```
+
+you can make the data available to components below a provider.
+
+```jsx
+import { createContext, useContext } from "react";
+
+const UserContext = createContext();
+
+function App() {
+  const user = {
+    name: "Gourab",
+    age: 22,
+  };
+
+  return (
+    <UserContext.Provider value={user}>
+      <Parent />
+    </UserContext.Provider>
+  );
+}
+
+function Parent() {
+  return <Child />;
+}
+
+function Child() {
+  return <GrandChild />;
+}
+
+function GrandChild() {
+  const user = useContext(UserContext);
+
+  return <h1>Hello {user.name}</h1>;
+}
+```
+
+Now:
+
+```text
+              UserContext
+                  │
+       ┌──────────┼──────────┐
+       ↓          ↓          ↓
+    Parent      Child    GrandChild
+                              │
+                              ↓
+                       useContext()
+```
+
+`Parent` and `Child` don't need to know anything about `user`.
+
+---
+
+## Prop drilling vs Context
+
+### Prop drilling
+
+```jsx
+<App user={user}>
+  <Parent user={user}>
+    <Child user={user}>
+      <GrandChild user={user} />
+    </Child>
+  </Parent>
+</App>
+```
+
+### Context
+
+```jsx
+<UserContext.Provider value={user}>
+  <Parent>
+    <Child>
+      <GrandChild />
+    </Child>
+  </Parent>
+</UserContext.Provider>
+```
+
+And:
+
+```jsx
+function GrandChild() {
+  const user = useContext(UserContext);
+}
+```
+
+---
+
+## One important thing
+
+Don't think:
+
+> "Prop drilling is bad, therefore always use Context."
+
+That's not the right mental model.
+
+If the data only needs to travel **one or two levels**, normal props are usually cleaner.
+
+For example:
+
+```text
+App
+ ↓
+Navbar
+ ↓
+UserProfile
+```
+
+Passing:
+
+```jsx
+<Navbar user={user} />
+```
+
+is completely reasonable.
+
+Context becomes more useful when:
+
+- many components need the same data
+- components are deeply nested
+- passing props through intermediate components becomes cumbersome
+- the data is something like theme, authentication state, locale, etc.
+
+---
+
+### The mental model to remember
+
+**Props = explicit data flow**
+
+```text
+Parent ──props──> Child
+```
+
+**Prop drilling = props passing through components that don't need them**
+
+```text
+A ──data──> B ──data──> C ──data──> D
+     ↑              ↑
+   doesn't        doesn't
+    need           need
+```
+
+**Context = allow descendants to access shared data without manually passing it through every intermediate component.**
+
+And importantly, **Context doesn't eliminate the component tree or props altogether**—it simply provides another way for descendants to access certain shared values.
+
+---
+
+# (Q-6)

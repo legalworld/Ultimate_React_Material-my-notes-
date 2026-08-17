@@ -8,7 +8,6 @@ function User({ id, name, username, email, phone, address, company, website }) {
         margin: "1rem",
         backgroundColor: "#292929",
         color: "#efefef",
-        marginLeft: "300px",
       }}
     >
       <h4>id: {id}</h4>

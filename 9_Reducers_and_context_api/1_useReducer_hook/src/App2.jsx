@@ -65,7 +65,7 @@ export default App;
 
 /*
 
-usereducer hook returns an array, which going to has
+useReducer() hook returns an array, which going to has
 a length of 2.
 --->at first index it will give us a state.
 --->and at second index it will give us a function to update that state.

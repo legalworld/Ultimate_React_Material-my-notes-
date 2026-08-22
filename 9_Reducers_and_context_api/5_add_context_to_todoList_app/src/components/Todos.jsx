@@ -1,10 +1,8 @@
 import React from "react";
 import Todo from "./Todo";
-import { useContext } from "react";
-import { TodosContext } from "../App";
-
+import { useTodos } from "../contexts/TodosProvider";
 function Todos() {
-  const { todos } = useContext(TodosContext);
+  const { todos } = useTodos();
   return (
     <div>
       {todos.map((todo) => {

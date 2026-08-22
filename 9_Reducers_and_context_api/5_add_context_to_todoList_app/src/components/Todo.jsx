@@ -1,7 +1,7 @@
-import { useContext } from "react";
-import { TodosContext } from "../App";
+import { useTodos } from "../contexts/TodosProvider";
+
 function Todo({ id, title, completed }) {
-  const { dispatch } = useContext(TodosContext);
+  const { dispatch } = useTodos();
 
   function handleDelete() {
     console.log("handle delete called");

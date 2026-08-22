@@ -1,9 +1,9 @@
-import { useState, useContext } from "react";
-import { TodosContext } from "../App";
+import { useState } from "react";
+import { useTodos } from "../contexts/TodosProvider";
 
 function AddTodoForm() {
   const [title, setTitle] = useState("");
-  const { dispatch } = useContext(TodosContext);
+  const { dispatch } = useTodos();
   function handleSubmit(e) {
     e.preventDefault();
     if (title.trim().length === 0) {

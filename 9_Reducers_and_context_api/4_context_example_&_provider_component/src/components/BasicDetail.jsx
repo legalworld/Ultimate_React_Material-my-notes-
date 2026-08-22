@@ -1,17 +1,24 @@
 import { useContext } from "react";
 // import { AuthContext } from "../main";
 import { AuthContext } from "./AuthProvider";
-// import { useAuth } from "./AuthProvider";
+import { useAuth } from "./AuthProvider";
 
 function BasicDetail() {
   // const { username, email } = useContext(AuthContext);
   // const { username, email } = useAuth();
-  const { auth } = useContext(AuthContext);
+  const { auth, setAuth } = useAuth();
 
   return (
     <div>
       <h2>name: {auth.username}</h2>
       <h2>email: {auth.email}</h2>
+      <button
+        onClick={() => {
+          setAuth({});
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
   // return <h1>basic detail</h1>;

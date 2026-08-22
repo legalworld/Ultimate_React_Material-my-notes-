@@ -1,12 +1,14 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext } from "react";
 
 export const AuthContext = createContext();
 
+// {
+//     username: "gourab",
+//     email: "xyz@gmail.com",
+//   }
+
 function AuthProvider({ children }) {
-  const [auth, setAuth] = useState({
-    username: "gourab",
-    email: "xyz@gmail.com",
-  });
+  const [auth, setAuth] = useState({});
   return (
     // <AuthContext.Provider
     //   value={{
@@ -23,9 +25,9 @@ function AuthProvider({ children }) {
   );
 }
 
-// export function useAuth() {
-//   return useContext(AuthContext);
-// }
+export function useAuth() {
+  return useContext(AuthContext);
+}
 
 export default AuthProvider;
 
@@ -38,3 +40,8 @@ export default AuthProvider;
 // ! in this file what are you witnessing, is a Provider component...
 
 // * we basically keep the data in state...
+
+// if there is no data in obj, inside of useState(),
+// that means user is not logged in.
+// to mimic that, we can do something like,
+// the BasicDetail component only gonna show, when the Auth has username...

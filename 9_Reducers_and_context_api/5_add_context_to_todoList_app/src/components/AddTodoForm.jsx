@@ -3,7 +3,7 @@ import { useTodos } from "../contexts/TodosProvider";
 
 function AddTodoForm() {
   const [title, setTitle] = useState("");
-  const { dispatch } = useTodos();
+  const { addNewTodo } = useTodos();
   function handleSubmit(e) {
     e.preventDefault();
     if (title.trim().length === 0) {
@@ -15,10 +15,7 @@ function AddTodoForm() {
       completed: false,
       id: crypto.randomUUID(),
     };
-    dispatch({
-      type: "ADD_TODO",
-      payload: { newTodo: newTodo },
-    });
+    addNewTodo(newTodo);
     setTitle("");
   }
 

@@ -1,15 +1,7 @@
 import { useTodos } from "../contexts/TodosProvider";
 
 function Todo({ id, title, completed }) {
-  const { dispatch } = useTodos();
-
-  function handleDelete() {
-    console.log("handle delete called");
-    dispatch({
-      type: "DELETE",
-      payload: { id: id },
-    });
-  }
+  const { handleDelete, dispatch } = useTodos();
 
   function handleToggle() {
     dispatch({
@@ -37,7 +29,13 @@ function Todo({ id, title, completed }) {
         title: {title}
       </h4>
       <h4>completed: {completed ? "True" : "False"}</h4>
-      <button onClick={handleDelete}>Delete</button>
+      <button
+        onClick={() => {
+          handleDelete(id);
+        }}
+      >
+        Delete
+      </button>
       <button onClick={handleToggle}>Toggle Completed</button>
     </div>
   );

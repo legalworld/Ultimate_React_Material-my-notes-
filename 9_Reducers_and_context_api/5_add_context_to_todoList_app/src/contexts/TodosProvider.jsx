@@ -35,11 +35,28 @@ const initialTodos = [
 
 function TodosProvider({ children }) {
   const [todos, dispatch] = useReducer(reducer, initialTodos);
+  function handleDelete(id) {
+    console.log("handle delete called");
+    dispatch({
+      type: "DELETE",
+      payload: { id: id },
+    });
+  }
+
+  const addNewTodo = (newTodo) => {
+    dispatch({
+      type: "ADD_TODO",
+      payload: { newTodo: newTodo },
+    });
+  };
+
   return (
     <TodosContext.Provider
       value={{
         todos: todos,
         dispatch: dispatch,
+        handleDelete,
+        addNewTodo,
       }}
     >
       {children}

@@ -129,4 +129,92 @@ first, and then learn `createRoutesFromElements()` as the JSX alternative.
 
 ---
 
-# (Q-2)
+# (Q-2) _\<Route path="posts/\:id" element={\<PostDetail />} />_
+
+# EXPLANATION: ???\*
+
+==>
+
+Exactly. You can write the explanation like this:
+
+### `useParams()` with dynamic route
+
+```jsx
+<Route path="posts/:id" element={<PostDetail />} />
+```
+
+**Explanation:**
+
+- `:id` is a **dynamic route parameter**.
+- It means that `id` can have different values depending on the URL.
+- For example:
+
+```text
+/posts/1
+/posts/25
+/posts/100
+```
+
+Here, `1`, `25`, and `100` are values of the `id` parameter.
+
+Inside `PostDetail`, we can access that value using the **`useParams()` hook**:
+
+```jsx
+import { useParams } from "react-router-dom";
+
+function PostDetail() {
+  const { id } = useParams();
+
+  console.log(id);
+
+  return <h1>Post ID: {id}</h1>;
+}
+```
+
+So if the URL is:
+
+```text
+/posts/25
+```
+
+then:
+
+```js
+const { id } = useParams();
+```
+
+gives:
+
+```js
+id === "25";
+```
+
+**Important:** `useParams()` returns URL parameters as **strings**, so if you need a number, convert it:
+
+```js
+const postId = Number(id);
+```
+
+### General pattern
+
+```text
+Route
+  ↓
+/posts/:id
+  ↓
+URL: /posts/25
+  ↓
+:id = "25"
+  ↓
+useParams()
+  ↓
+{ id: "25" }
+```
+
+So the key idea is:
+
+> **`:id` defines a dynamic parameter in the route, and `useParams()` retrieves that parameter inside the component rendered by that route.**
+
+---
+
+# (Q-3)

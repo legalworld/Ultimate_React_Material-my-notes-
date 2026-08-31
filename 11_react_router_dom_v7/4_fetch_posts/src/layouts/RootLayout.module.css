@@ -1,0 +1,6 @@
+.activeNav {
+  color: rgb(209, 6, 245);
+  text-decoration: underline;
+}
+
+/* css modules help us to avoid name collision... */

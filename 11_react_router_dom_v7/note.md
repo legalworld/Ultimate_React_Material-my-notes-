@@ -1735,4 +1735,533 @@ And if you're using **cookies/session-based authentication rather than localStor
 
 ---
 
-# (Q-9)
+# (Q-9) tell me about Search Params and Redirect in react.
+
+==>
+
+Sure. Since you're learning **React Router**, the easiest way to understand **Search Params** and **Redirects** is to understand what problem each one solves.
+
+---
+
+# 1. Search Params
+
+Search params are the `?key=value` part of a URL.
+
+For example:
+
+```text
+/products?category=shoes&sort=price
+```
+
+Here:
+
+```text
+/products
+   ↑
+pathname
+
+?category=shoes&sort=price
+ ↑
+search params
+```
+
+You can have multiple parameters:
+
+```text
+/products?category=shoes&sort=price&page=2
+```
+
+Think of them as **data attached to the URL**.
+
+---
+
+## Why do we use Search Params?
+
+Suppose you have a product page.
+
+Instead of creating routes like:
+
+```text
+/products/shoes
+/products/shirts
+/products/laptops
+```
+
+you can have:
+
+```text
+/products?category=shoes
+/products?category=shirts
+/products?category=laptops
+```
+
+This is especially useful for:
+
+- filtering
+- searching
+- sorting
+- pagination
+- tabs
+- UI state that you want represented in the URL
+
+The nice thing is that the URL can be copied or bookmarked.
+
+---
+
+# 2. Getting Search Params in React Router
+
+React Router gives you the `useSearchParams()` hook.
+
+```js
+import { useSearchParams } from "react-router-dom";
+
+function Products() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const category = searchParams.get("category");
+
+  console.log(category);
+
+  return <h1>Products</h1>;
+}
+```
+
+If the URL is:
+
+```text
+/products?category=shoes
+```
+
+then:
+
+```js
+searchParams.get("category");
+```
+
+returns:
+
+```text
+"shoes"
+```
+
+---
+
+# 3. Multiple Search Params
+
+URL:
+
+```text
+/products?category=shoes&sort=price&page=2
+```
+
+You can do:
+
+```js
+const category = searchParams.get("category");
+const sort = searchParams.get("sort");
+const page = searchParams.get("page");
+
+console.log(category); // shoes
+console.log(sort); // price
+console.log(page); // 2
+```
+
+Notice that `page` is still a **string**:
+
+```js
+typeof page; // "string"
+```
+
+If you need a number:
+
+```js
+const page = Number(searchParams.get("page"));
+```
+
+---
+
+# 4. Changing Search Params
+
+You can use:
+
+```js
+setSearchParams();
+```
+
+For example:
+
+```js
+setSearchParams({
+  category: "shoes",
+  sort: "price",
+});
+```
+
+The URL becomes:
+
+```text
+/products?category=shoes&sort=price
+```
+
+This is very useful for filters.
+
+For example:
+
+```jsx
+<button
+  onClick={() => {
+    setSearchParams({ category: "shoes" });
+  }}
+>
+  Shoes
+</button>
+```
+
+Clicking the button changes:
+
+```text
+/products
+```
+
+to:
+
+```text
+/products?category=shoes
+```
+
+---
+
+# 5. Search Params vs URL Params
+
+This distinction is **very important**.
+
+### URL parameter
+
+```text
+/posts/123
+```
+
+Route:
+
+```jsx
+<Route path="/posts/:id" element={<Post />} />
+```
+
+Get it with:
+
+```js
+const { id } = useParams();
+```
+
+---
+
+### Search parameter
+
+```text
+/posts?id=123
+```
+
+Get it with:
+
+```js
+const [searchParams] = useSearchParams();
+
+const id = searchParams.get("id");
+```
+
+So:
+
+```text
+/posts/123
+       ↑
+       URL parameter
+```
+
+versus:
+
+```text
+/posts?id=123
+      ↑
+      search parameter
+```
+
+A useful mental model:
+
+> **URL params identify a resource. Search params describe how you want to view/query that resource.**
+
+For example:
+
+```text
+/products/123
+```
+
+means:
+
+> Give me product 123.
+
+While:
+
+```text
+/products?category=shoes&sort=price
+```
+
+means:
+
+> Give me products, filtered by shoes and sorted by price.
+
+---
+
+# 6. What is Redirect?
+
+A redirect means:
+
+> "Don't stay on this URL. Go somewhere else."
+
+For example:
+
+```text
+/dashboard
+```
+
+might require authentication.
+
+If the user isn't logged in:
+
+```text
+/dashboard
+     ↓
+not authenticated
+     ↓
+/login
+```
+
+With React Router, you can use:
+
+```js
+import { redirect } from "react-router-dom";
+```
+
+Then inside a loader:
+
+```js
+export function loader() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return redirect("/login");
+  }
+
+  return null;
+}
+```
+
+This is particularly useful with the **loader-based routing** you've been learning.
+
+---
+
+# 7. `redirect()` vs `navigate()`
+
+This is another important distinction.
+
+### `navigate()`
+
+Used inside React components/hooks.
+
+```js
+import { useNavigate } from "react-router-dom";
+
+function Login() {
+  const navigate = useNavigate();
+
+  function handleLogin() {
+    // login...
+    navigate("/dashboard");
+  }
+}
+```
+
+You're inside a component, so you can use:
+
+```js
+useNavigate();
+```
+
+---
+
+### `redirect()`
+
+Primarily used in React Router's data APIs such as:
+
+- loaders
+- actions
+
+Example:
+
+```js
+export function loader() {
+  if (!isLoggedIn()) {
+    return redirect("/login");
+  }
+
+  return null;
+}
+```
+
+So remember:
+
+```text
+Component
+   ↓
+useNavigate()
+```
+
+and
+
+```text
+loader/action
+   ↓
+redirect()
+```
+
+---
+
+# 8. Search Params + Redirect Together
+
+Here's where this becomes really useful.
+
+Imagine the user tries to visit:
+
+```text
+/dashboard
+```
+
+but isn't logged in.
+
+You redirect them to:
+
+```text
+/login?redirectTo=/dashboard
+```
+
+Now the login page can read:
+
+```js
+const [searchParams] = useSearchParams();
+
+const redirectTo = searchParams.get("redirectTo");
+```
+
+which gives:
+
+```text
+/dashboard
+```
+
+After successful login:
+
+```js
+navigate(redirectTo || "/");
+```
+
+So the flow is:
+
+```text
+User
+ ↓
+/dashboard
+ ↓
+Loader checks authentication
+ ↓
+Not logged in
+ ↓
+/login?redirectTo=/dashboard
+ ↓
+User logs in
+ ↓
+/dashboard
+```
+
+This pattern is called **return-to / post-login redirect** and is very common.
+
+---
+
+# 9. One More Important Thing: Redirect in a Loader
+
+Since you've been asking about loaders, this is probably the most important part for you.
+
+Suppose:
+
+```jsx
+<Route path="/dashboard" element={<Dashboard />} loader={dashboardLoader} />
+```
+
+Then:
+
+```js
+export function dashboardLoader() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return redirect("/login");
+  }
+
+  return null;
+}
+```
+
+The sequence is:
+
+```text
+Request /dashboard
+       ↓
+loader()
+       ↓
+Is user authenticated?
+       ↓
+   ┌───┴───┐
+  NO      YES
+   ↓        ↓
+redirect   return data
+/login       ↓
+           Dashboard
+```
+
+This is why loaders are powerful for **route-level protection**: the authentication check happens before the route's element is rendered.
+
+---
+
+## The template I want you to remember
+
+When you see a URL, mentally break it apart:
+
+```text
+https://example.com/products/123?sort=price&page=2
+                         │   │
+                         │   └── Search Params
+                         │
+                         └────── URL Param
+```
+
+React Router tools:
+
+| Problem                     | React Router        |
+| --------------------------- | ------------------- |
+| `/products/123` → get `123` | `useParams()`       |
+| `?sort=price` → get `price` | `useSearchParams()` |
+| Change URL search params    | `setSearchParams()` |
+| Navigate from component     | `useNavigate()`     |
+| Redirect from loader/action | `redirect()`        |
+
+### General mental model
+
+**Path params** → _Which resource?_
+
+**Search params** → _How should I filter/sort/search that resource?_
+
+**Redirect** → _The current destination isn't appropriate; send the user somewhere else._
+
+Once you understand these three ideas, a lot of React Router code starts becoming much easier to read.
+
+---
+
+# (Q-10)

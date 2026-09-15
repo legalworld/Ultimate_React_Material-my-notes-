@@ -205,3 +205,7 @@ React's normal behavior is:
 > "The parent updated. Let me check whether this child's inputs changed before rendering it again."
 
 React does not automatically do this for every component because rendering is the default, while skipping renders is an optimization that has costs and conditions.
+
+---
+
+# (Q-2)

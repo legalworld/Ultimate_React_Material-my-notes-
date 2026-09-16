@@ -2479,3 +2479,7 @@ Read
 10. Change state by creating reducers/actions in the slice, importing the actions, and using `useDispatch()`.
 
 **Current status:** steps 1–8 are set up. Your `App.jsx` still displays a hardcoded `0`, and `counterSlice.js` does not yet contain counter reducers such as `increase`, `decrease`, or `reset`.
+
+---
+
+# (Q-3)

@@ -1,0 +1,25 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "book tickets",
+      "completed": true
+    },
+    {
+      "id": "2",
+      "title": "book return tickets",
+      "completed": false
+    },
+    {
+      "title": "rdgdfg",
+      "completed": false,
+      "id": "xD1CHJMRtlg"
+    },
+    {
+      "title": "coding",
+      "completed": false,
+      "id": "CmKxVKKZfAE"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

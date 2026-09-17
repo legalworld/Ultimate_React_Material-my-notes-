@@ -1,0 +1,50 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "book tickets",
+      "completed": true
+    },
+    {
+      "id": "2",
+      "title": "book return tickets",
+      "completed": false
+    },
+    {
+      "title": "rdgdfg",
+      "completed": false,
+      "id": "xD1CHJMRtlg"
+    },
+    {
+      "title": "coding",
+      "completed": false,
+      "id": "CmKxVKKZfAE"
+    },
+    {
+      "title": "dfhgcf",
+      "completed": false,
+      "id": "XFsxZuH4l48"
+    },
+    {
+      "title": "holaaaaaaaaaa",
+      "completed": false,
+      "id": "VvnNvIKowD8"
+    },
+    {
+      "title": "codprog",
+      "completed": false,
+      "id": "BETpu5Dgsz4"
+    },
+    {
+      "title": "",
+      "completed": false,
+      "id": "v24Heh0A8xg"
+    },
+    {
+      "title": "lol",
+      "completed": false,
+      "id": "kbYAg0KR2lA"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

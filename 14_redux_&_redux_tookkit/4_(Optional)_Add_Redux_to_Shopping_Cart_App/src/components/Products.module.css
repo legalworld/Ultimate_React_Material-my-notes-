@@ -1,0 +1,22 @@
+.products {
+  /* border: 2px solid red; */
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    1fr
+  ); /* 3 columns has been made of 1 fraction unit... */
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 900px) {
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .products {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,14 @@
+{
+    "todos": [
+        {
+            "id": 1,
+            "title": "book tickets",
+            "completed": true
+        },
+        {
+            "id": 2,
+            "title": "book return tickets",
+            "completed": false
+        }
+    ]
+}

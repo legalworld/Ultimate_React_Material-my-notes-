@@ -1,0 +1,15 @@
+{
+  "todos": [
+    {
+      "title": "play guitar",
+      "completed": false,
+      "id": "qYikcvPjmH4"
+    },
+    {
+      "title": "study computer",
+      "completed": false,
+      "id": "qrSDAfsBZHo"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

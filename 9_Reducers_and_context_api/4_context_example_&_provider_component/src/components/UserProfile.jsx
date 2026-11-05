@@ -1,12 +1,15 @@
 import React from "react";
 import BasicDetail from "./BasicDetail";
 import { useAuth } from "./AuthProvider";
+
 function UserProfile() {
-  const { auth, setAuth } = useAuth();
+  const { auth = {}, setAuth } = useAuth();
+  const isLoggedIn = Boolean(auth?.username);
+
   return (
     <>
       <h1>User Profile</h1>
-      {auth.username ? (
+      {isLoggedIn ? (
         <BasicDetail />
       ) : (
         <button

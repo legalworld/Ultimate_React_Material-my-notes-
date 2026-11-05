@@ -26,7 +26,7 @@
 
 ## but my instractor harshit vasistha think's of react more like a framework than a library. because we always use other libraries with react. Example: React Router DOM. whole react ecosystem feels like a framework...
 
-# (Q) For virtual DOM, React uses which algorithms?
+# (Q-1) For virtual DOM, React uses which algorithms?
 
 ==>
 
@@ -194,7 +194,7 @@ So if someone asks, **"Which algorithm does React use for the Virtual DOM?"**, t
 
 ---
 
-# (Q) tell me about babel & jsx stuff...
+# (Q-2) tell me about babel & jsx stuff...
 
 ==>
 
@@ -625,7 +625,7 @@ Once you see JSX as **just syntax that gets compiled into JavaScript**, React be
 
 ---
 
-# (Q) why CRA has not any script tag in it's index.html file but vite does ?
+# (Q-3) why CRA has not any script tag in it's index.html file but vite does ?
 
 ==>
 
@@ -957,3 +957,103 @@ So your intuition was correct: **both CRA and Vite ultimately need JavaScript lo
 // both are react fragment syntax, one is long & another one is short form ...
 
 ```
+
+---
+
+# (Q-4) is react-dom and react-router-dom is same ?
+
+==>
+
+No. **`react-dom` and `react-router-dom` are different packages**, and they solve different problems.
+
+### 1. `react-dom`
+
+`react-dom` connects **React to the browser's DOM**.
+
+Think:
+
+```text
+React
+  |
+  v
+react-dom
+  |
+  v
+Browser DOM
+```
+
+For example:
+
+```jsx
+import { createRoot } from "react-dom/client";
+
+createRoot(document.getElementById("root")).render(<App />);
+```
+
+Its job is essentially:
+
+> "Take my React components and render them into the actual HTML DOM."
+
+---
+
+### 2. `react-router-dom`
+
+`react-router-dom` handles **routing/navigation in a React web application**.
+
+Think:
+
+```text
+Browser URL
+    |
+    v
+react-router-dom
+    |
+    v
+Which React component should I show?
+```
+
+For example:
+
+```jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/about" element={<About />} />
+  </Routes>
+</BrowserRouter>;
+```
+
+Its job is:
+
+> "Depending on the URL, decide which React UI/component should be displayed."
+
+---
+
+### The easiest way to remember
+
+```text
+react-dom
+= React -> Browser DOM
+
+react-router-dom
+= URL -> React component
+```
+
+They are related, but **not the same thing**.
+
+Also, the name can be confusing:
+
+```text
+react
+react-dom
+react-router
+react-router-dom
+```
+
+`react-router-dom` is specifically the **web/browser-oriented package built around React Router**, whereas `react-dom` is the package that lets React work with the browser's DOM.
+
+---
+
+# (Q-5)

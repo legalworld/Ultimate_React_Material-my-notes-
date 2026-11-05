@@ -238,3 +238,11 @@ Just tell me **which one next**.
 ---
 
 # (Q-3)
+
+# supabase LMS database password:---> KEIm8KT4GxfLYxT7
+
+# srtipe secret key---> [REDACTED_STRIPE_TEST_KEY]
+
+# STRIPE_WEBHOOK_SIGNING_SECRET---> whsec_x8SYIN4l6WDUhc7IJlpOWoRnEwKpT9jY
+
+# 13:00

@@ -208,4 +208,346 @@ React does not automatically do this for every component because rendering is th
 
 ---
 
-# (Q-2)
+# (Q-2) What is the difference between memo and useMemo in React performance?
+
+==>
+
+The difference between `React.memo()` and `useMemo()` is one of the most important concepts to understand when learning React performance optimization.
+
+Although their names are similar, they solve two different performance problems.
+
+- `React.memo()` memoizes a component.
+- `useMemo()` memoizes a calculated value.
+
+Let's understand both with examples.
+
+# 1. First, understand the problem: unnecessary recalculations and re-renders
+
+Imagine you have a parent component and a child component.
+
+```
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+
+      <Child />
+    </>
+  );
+}
+
+function Child() {
+  console.log("Child rendered");
+
+  return <h1>Hello</h1>;
+}
+```
+
+What happens when you click Increment?
+
+1. `count` changes.
+2. Parent re-renders.
+3. Child also re-renders.
+
+But here's the question:
+
+Does Child actually need to re-render?
+
+Its props haven't changed. Its output is still Hello.
+
+This is where `React.memo()` becomes useful.
+
+# 2. React.memo(): Memoizing a component
+
+`React.memo()` is a higher-order component (HOC).
+
+It takes a component and returns a memoized version of that component.
+
+### Without React.memo()
+
+```
+function Child() {
+  console.log("Child rendered");
+
+  return <h1>Hello</h1>;
+}
+```
+
+Every time its parent re-renders, Child normally re-renders too.
+
+### With React.memo()
+
+```
+const Child = React.memo(function Child() {
+  console.log("Child rendered");
+
+  return <h1>Hello</h1>;
+});
+```
+
+Now React can skip rendering Child when its props haven't changed.
+
+Let's understand the execution:
+
+Parent component
+
+count = 0
+
+Click increment
+
+Parent re-renders
+
+Memoized Child
+
+Props unchanged
+
+Skip render
+
+React compares the previous and next props using shallow comparison (Object.is for individual props).
+
+Important: `React.memo()` only compares props by default. It doesn't prevent a component from re-rendering when its own state or consumed context changes.
+
+### Example with props
+
+```
+import { memo, useState } from "react";
+
+const Child = memo(function Child({ name }) {
+  console.log("Child rendered");
+
+  return <h1>Hello {name}</h1>;
+});
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>
+        {count}
+      </button>
+
+      <Child name="Gourab" />
+    </>
+  );
+}
+```
+
+Here, when you increment count:
+
+- Parent re-renders.
+- Child receives the same `name` prop.
+- React skips Child's re-render.
+
+# 3. useMemo(): Memoizing a calculated value
+
+Now let's understand a different problem.
+
+Imagine you have a component that performs an expensive calculation.
+
+```
+function App() {
+  const [count, setCount] = useState(0);
+
+  const result = expensiveCalculation(1000000);
+
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>
+        {count}
+      </button>
+
+      <h1>{result}</h1>
+    </>
+  );
+}
+```
+
+What's the problem?
+
+Every time `count` changes, the component re-renders.
+
+Consequently:
+
+```
+expensiveCalculation(1000000);
+```
+
+runs again.
+
+Even though its input hasn't changed!
+
+We can solve this using `useMemo()`.
+
+### With useMemo()
+
+```
+function App() {
+  const [count, setCount] = useState(0);
+
+  const result = useMemo(() => {
+    return expensiveCalculation(1000000);
+  }, []);
+
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>
+        {count}
+      </button>
+
+      <h1>{result}</h1>
+    </>
+  );
+}
+```
+
+Look at this part:
+
+```
+const result = useMemo(() => {
+  return expensiveCalculation(1000000);
+}, []);
+```
+
+`useMemo()` accepts two arguments:
+
+1. A calculation function.
+2. A dependency array.
+
+Because the dependency array is empty, React reuses the cached result across subsequent renders of this component instance.
+
+The expensive calculation doesn't need to run again just because `count` changes.
+
+# 4. How does the dependency array work?
+
+This is particularly important.
+
+Consider:
+
+```
+const result = useMemo(() => {
+  return expensiveCalculation(count);
+}, [count]);
+```
+
+Here, React remembers the previous value of `count`.
+
+Let's say:
+
+| Render | count | Calculation |
+| ------ | ----- | ----------- |
+| First  | 0     | Executes    |
+| Second | 1     | Executes    |
+| Third  | 1     | Skipped     |
+| Fourth | 2     | Executes    |
+| Fifth  | 2     | Skipped     |
+
+Why?
+
+Because `useMemo()` checks whether its dependencies have changed.
+
+- If dependencies change, it recalculates.
+- If dependencies remain the same, it reuses the cached value.
+
+# 5. The fundamental difference
+
+Let's compare them directly.
+
+React.memo()
+
+## Component
+
+Prevents unnecessary component re-renders when props are unchanged.
+
+Wraps a component.
+
+useMemo()
+
+## Value
+
+Prevents unnecessary recalculation of an expensive value.
+
+Wraps a calculation.
+
+| Feature  | React.memo                      | useMemo                 |
+| -------- | ------------------------------- | ----------------------- |
+| Type     | HOC                             | Hook                    |
+| Memoizes | Component rendering             | Calculation result      |
+| Input    | Component + optional comparison | Function + dependencies |
+| Returns  | Memoized component              | Cached value            |
+
+# 6. One more important concept: useCallback()
+
+Since you're learning React performance optimization, you should also understand `useCallback()`.
+
+Consider this example:
+
+```
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    console.log("Clicked");
+  };
+
+  return <Child onClick={handleClick} />;
+}
+```
+
+Every time Parent renders, a new function is created:
+
+```
+const handleClick = () => {
+  console.log("Clicked");
+};
+```
+
+Even though the function looks identical, it has a different reference.
+
+Therefore, if Child is wrapped in `React.memo()`, React sees that its `onClick` prop has changed and renders Child again.
+
+You can solve this with `useCallback()`:
+
+```
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() => {
+    console.log("Clicked");
+  }, []);
+
+  return <Child onClick={handleClick} />;
+}
+```
+
+Now the function reference is preserved between renders (while its dependencies remain unchanged).
+
+Here's how the three concepts fit together:
+
+| React API       | What it remembers                  |
+| --------------- | ---------------------------------- |
+| `React.memo()`  | Component rendering based on props |
+| `useMemo()`     | A calculated value                 |
+| `useCallback()` | A function reference               |
+
+# 7. A practical way to remember everything
+
+Think about an e-commerce application.
+
+Imagine you're building a product listing page.
+
+- `React.memo()` can prevent an unchanged ProductCard from re-rendering when its parent updates.
+- `useMemo()` can cache an expensive filtered or sorted product list.
+- `useCallback()` can preserve an event-handler function passed to memoized child components.
+
+One final warning: Don't use memoization everywhere.
+
+Memoization has its own costs, including dependency comparisons and memory usage. First identify an actual performance problem, then optimize it. React Compiler can also automatically optimize many components and values when enabled.
+
+---
+
+# (Q-3)

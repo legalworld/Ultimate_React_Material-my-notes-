@@ -1,26 +1,24 @@
 // react library ESM
-import React from 'https://esm.sh/react';
+import React from "https://esm.sh/react";
 
 // react-dom library ESM
-import ReactDOM from 'https://esm.sh/react-dom/client';
+import ReactDOM from "https://esm.sh/react-dom/client";
 
 // ! ########################################################
 // testing whether the script file is linked with the html file or not..
 console.log("hello world");
-// ! #################################################################### 
-
+// ! ####################################################################
 
 const rootElement = document.getElementById("root");
 // console.log(rootElement);
 
 // this function will take three arguments...
 // type, properties, children
-// properties are basically attributes like href, style etc... 
+// properties are basically attributes like href, style etc...
 const el = React.createElement("h1", null, "hello world");
 console.log(el);
 
 // after you print el, you can see this h1 react element is just an object...
-
 
 // now how to append this h1 element inside of the #root div ???
 //==> for that we gonna use react-dom library ...
@@ -30,13 +28,11 @@ root.render(el);
 
 // javascript sees any element in form of an object...
 
-
 function greeting() {
-    return React.createElement("p", {className: "paragraph"}, "welcome home");
+  return React.createElement("p", { className: "paragraph" }, "welcome home");
 }
 
 root.render(greeting());
-
 
 // To render both at once, you need to give `root.render()` **one thing** that contains both elements — not two separate calls. Right now each `render()` call replaces whatever was there before, so only the last one sticks.
 

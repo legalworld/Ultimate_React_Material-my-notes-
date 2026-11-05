@@ -1,17 +1,14 @@
-import { useContext } from "react";
-// import { AuthContext } from "../main";
-import { AuthContext } from "./AuthProvider";
 import { useAuth } from "./AuthProvider";
 
 function BasicDetail() {
-  // const { username, email } = useContext(AuthContext);
-  // const { username, email } = useAuth();
-  const { auth, setAuth } = useAuth();
+  const { auth = {}, setAuth } = useAuth();
+  const username = auth?.username ?? "Guest";
+  const email = auth?.email ?? "Not available";
 
   return (
     <div>
-      <h2>name: {auth.username}</h2>
-      <h2>email: {auth.email}</h2>
+      <h2>name: {username}</h2>
+      <h2>email: {email}</h2>
       <button
         onClick={() => {
           setAuth({});

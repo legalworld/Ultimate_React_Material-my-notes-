@@ -32,7 +32,7 @@ function BasicForm() {
       <h1>FirstName: {firstName}</h1>
       <br />
       <br />
-      <label htmlFor="firstname">FirstName: </label>
+      <label htmlFor="lastname">LastName: </label>
       <input
         type="text"
         name="lastname"
